@@ -150,7 +150,7 @@ export default function DiscoverPage() {
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [mainPlatformFilter, setMainPlatformFilter] = useState<string>("All");
   const [selectedInfluencerId, setSelectedInfluencerId] = useState<string | null>(null);
-  const [socialUrl, setSocialUrl] = useState("");
+  const [unifiedSearchInput, setUnifiedSearchInput] = useState("");
   const [urlSearchError, setUrlSearchError] = useState("");
   const [generatedInfluencer, setGeneratedInfluencer] = useState<Influencer | null>(null);
   const [generatedInfluencerMeta, setGeneratedInfluencerMeta] = useState<InfluencerMeta | null>(null);
@@ -184,8 +184,8 @@ export default function DiscoverPage() {
     setMinResponseRate(0);
     setMainPlatformFilter("All");
   };
-  const applySmartQuery = () => {
-    const normalized = smartQuery.toLowerCase();
+  const applySmartQuery = (query?: string) => {
+    const normalized = (query ?? smartQuery).toLowerCase();
     if (!normalized.trim()) return;
 
     const detectedPlatforms = platforms.filter((item) => normalized.includes(item.toLowerCase()));
@@ -291,15 +291,15 @@ export default function DiscoverPage() {
     return Math.round(min + normalized * (max - min));
   };
 
-  const buildInfluencerFromSocialUrl = () => {
-    if (!socialUrl.trim()) {
+  const buildInfluencerFromSocialUrl = (input: string) => {
+    if (!input.trim()) {
       setUrlSearchError("Please enter a social profile URL.");
       return;
     }
 
     let parsed: URL;
     try {
-      parsed = new URL(socialUrl.trim());
+      parsed = new URL(input.trim());
     } catch {
       setUrlSearchError("Invalid URL format. Please provide a valid social profile link.");
       return;
@@ -370,6 +370,25 @@ export default function DiscoverPage() {
     setGeneratedInfluencer(nextInfluencer);
     setGeneratedInfluencerMeta(nextMeta);
     setSelectedInfluencerId(nextInfluencer.id);
+    setUrlSearchError("");
+  };
+
+  const handleUnifiedSearch = () => {
+    const query = unifiedSearchInput.trim();
+    if (!query) {
+      setUrlSearchError("Please enter a social URL or smart search query.");
+      return;
+    }
+
+    const looksLikeUrl = /^(https?:\/\/|www\.)/i.test(query) || /(?:instagram|tiktok|youtube|youtu\.be|facebook|x\.com|twitter|lemon8)\./i.test(query);
+    if (looksLikeUrl) {
+      const normalizedUrl = /^https?:\/\//i.test(query) ? query : `https://${query}`;
+      buildInfluencerFromSocialUrl(normalizedUrl);
+      return;
+    }
+
+    setSmartQuery(query);
+    applySmartQuery(query);
     setUrlSearchError("");
   };
 
@@ -537,24 +556,6 @@ export default function DiscoverPage() {
                 </button>
               </div>
               <div className="mt-3 space-y-3">
-                <div>
-                  <label className="block text-xs font-medium text-slate-600">Smart filter query</label>
-                  <textarea
-                    value={smartQuery}
-                    onChange={(event) => setSmartQuery(event.target.value)}
-                    placeholder="beauty tiktok thailand micro"
-                    rows={3}
-                    className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={applySmartQuery}
-                    className="mt-2 w-full rounded-xl bg-indigo-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700"
-                  >
-                    Apply AI filter
-                  </button>
-                </div>
-
                 <div>
                   <label className="block text-xs font-medium text-slate-600">Platform</label>
                   <div className="mt-2 space-y-1.5">
@@ -883,24 +884,25 @@ export default function DiscoverPage() {
         <div className="min-w-0 space-y-4">
         <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-slate-700">Search influencer by social URL</label>
+            <label className="text-sm font-semibold text-slate-700">Search influencer (social URL or Smart Search)</label>
             <div className="flex flex-col gap-2 md:flex-row">
               <input
-                type="url"
-                value={socialUrl}
-                onChange={(event) => setSocialUrl(event.target.value)}
-                placeholder="https://www.instagram.com/creator_name"
+                type="text"
+                value={unifiedSearchInput}
+                onChange={(event) => setUnifiedSearchInput(event.target.value)}
+                placeholder="https://instagram.com/creator_name or beauty tiktok thailand micro"
                 className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
               <button
                 type="button"
-                onClick={buildInfluencerFromSocialUrl}
+                onClick={handleUnifiedSearch}
                 className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
               >
-                Generate Detail
+                Search
               </button>
             </div>
             {urlSearchError && <p className="text-xs text-rose-600">{urlSearchError}</p>}
+            <p className="text-xs text-slate-500">Tip: Paste a creator URL to generate profile detail, or type keywords to apply smart filters.</p>
           </div>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
