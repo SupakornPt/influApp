@@ -1,4 +1,4 @@
-import { getMainFollowerPlatform } from "@/lib/influencer-platforms";
+import { getMainFollowerPlatform, getShowcaseDemoEmbed, getTopAvgViewsPlatform } from "@/lib/influencer-platforms";
 import { Influencer } from "@/lib/types";
 
 interface InfluencerMeta {
@@ -52,6 +52,9 @@ export function InfluencerDetailPanel({ influencer, meta, onClose }: InfluencerD
   const avatarUrl = `https://api.dicebear.com/9.x/thumbs/svg?seed=${encodeURIComponent(influencer.name)}`;
   const allPlatforms = [...influencer.platforms, ...meta.extraPlatforms];
   const mainFollowers = getMainFollowerPlatform(influencer);
+  const topByViews = getTopAvgViewsPlatform(influencer);
+  const showcaseEmbed = getShowcaseDemoEmbed(topByViews.platform, influencer.id);
+  const headlineAvgViews = topByViews.avgViews > 0 ? topByViews.avgViews : meta.averageViews;
 
   return (
     <aside className="fixed right-4 top-20 z-30 h-[calc(100vh-6rem)] w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
@@ -79,6 +82,37 @@ export function InfluencerDetailPanel({ influencer, meta, onClose }: InfluencerD
         </header>
 
         <div className="space-y-4 overflow-y-auto p-4 text-sm">
+          <section className="rounded-xl border border-indigo-100 bg-gradient-to-b from-indigo-50/80 to-white p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700">Spotlight · highest avg views</p>
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+              <span className="rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white">{topByViews.platform}</span>
+              <span className="text-xs text-slate-600">~{headlineAvgViews.toLocaleString()} avg views on this platform</span>
+            </div>
+            <p className="mt-1 text-[11px] text-slate-500">Demo sample video for this platform — not this creator’s real post.</p>
+            {showcaseEmbed.kind === "iframe" ? (
+              <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-black shadow-inner">
+                <div className="relative aspect-video w-full">
+                  <iframe
+                    title={showcaseEmbed.title}
+                    src={showcaseEmbed.src}
+                    className="absolute inset-0 h-full w-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            ) : (
+              <a
+                href={showcaseEmbed.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-3 text-xs font-semibold text-indigo-700 shadow-sm hover:bg-slate-50"
+              >
+                {showcaseEmbed.label}
+              </a>
+            )}
+          </section>
+
           <section className="rounded-xl border border-slate-200 p-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Identity &amp; platforms</p>
             <div className="mt-2 flex flex-wrap gap-1.5">

@@ -363,6 +363,7 @@ function DiscoverPageContent() {
       platforms: [platform],
       followers,
       followersByPlatform: { [platform]: followers },
+      avgViewsByPlatform: { [platform]: averageViews },
       engagementRate,
       category: inferredCategory,
       performanceScore,

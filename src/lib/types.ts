@@ -8,6 +8,8 @@ export interface Influencer {
   followers: number;
   /** Follower count per platform; largest entry is the creator's primary audience platform. */
   followersByPlatform: Record<string, number>;
+  /** Avg views per post/reel/video by platform; used to pick the top “views” platform for showcases. */
+  avgViewsByPlatform: Record<string, number>;
   engagementRate: number;
   category: string;
   performanceScore: number;
