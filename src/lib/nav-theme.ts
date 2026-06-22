@@ -61,6 +61,15 @@ const NAV_ICON_ACTIVE_CLASSES: Record<string, string> = {
   "/tracking": "text-nav-forest-900"
 };
 
+const NAV_PAGE_BG_CLASSES: Record<string, string> = {
+  "/dashboard": "bg-slate-100",
+  "/campaigns": "bg-nav-bronze-100",
+  "/messages": "bg-nav-teal-100",
+  "/discover": "bg-nav-ocean-100",
+  "/smart-plan": "bg-nav-burnt-100",
+  "/tracking": "bg-nav-forest-100"
+};
+
 function matchNavRoute(pathname: string): string {
   const match = NAV_ROUTES.find((route) => pathname === route || pathname.startsWith(`${route}/`));
   return match ?? "/dashboard";
@@ -96,4 +105,8 @@ export function getPageSolidClassForRoute(route: string): string {
 
 export function getPageAccentTextClassForRoute(route: string): string {
   return NAV_ACCENT_TEXT_CLASSES[route] ?? NAV_ACCENT_TEXT_CLASSES["/dashboard"];
+}
+
+export function getPageBgClass(pathname: string): string {
+  return NAV_PAGE_BG_CLASSES[matchNavRoute(pathname)];
 }

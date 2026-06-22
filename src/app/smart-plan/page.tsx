@@ -320,7 +320,7 @@ export default function SmartPlanPage() {
 
   return (
     <section className="space-y-6 p-6">
-      <header className="flex flex-wrap items-start justify-between gap-3">
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Smart Plan</h1>
           <p className="mt-1 text-sm text-slate-600">Plan your campaign from requirements through the creative brief.</p>
@@ -331,7 +331,7 @@ export default function SmartPlanPage() {
         >
           Back
         </Link>
-      </header>
+      </div>
 
       {viewMode === "list" && (
         <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">

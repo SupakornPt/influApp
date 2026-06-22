@@ -5,9 +5,8 @@ import { Navigation } from "@/components/navigation";
 import { PageContentLayout, isPageContentLayout } from "@/components/page-content-layout";
 import { SidebarProvider, useSidebar } from "@/components/sidebar-context";
 import { SiteFooter } from "@/components/site-footer";
-import { getRoleTheme } from "@/lib/role-theme";
+import { getPageBgClass } from "@/lib/nav-theme";
 import { cn } from "@/lib/utils";
-import { useUserStore } from "@/store/useUserStore";
 
 function AppSidebarLayout({ children, pageBg }: { children: React.ReactNode; pageBg: string }) {
   const { collapsed } = useSidebar();
@@ -40,8 +39,7 @@ function AppSidebarLayout({ children, pageBg }: { children: React.ReactNode; pag
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? "";
-  const { role } = useUserStore();
-  const roleTheme = getRoleTheme(role);
+  const pageBg = getPageBgClass(pathname);
   const isLandingPage = pathname === "/";
   const isAuthPage = ["/login", "/register", "/forgot-password"].includes(pathname);
   const isSmartPlanPage = pathname === "/smart-plan" || pathname.startsWith("/smart-plan/");
@@ -70,7 +68,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   if (isSmartPlanPage) {
     return (
-      <main className={cn("min-h-screen px-4 pb-6 pt-6 transition-colors duration-300 lg:px-6 lg:pt-8", roleTheme.pageBg)}>
+      <main className={cn("min-h-screen px-4 pb-6 pt-6 transition-colors duration-300 lg:px-6 lg:pt-8", pageBg)}>
         <div className="mx-auto max-w-6xl">
           {isPageContentLayout(children) ? children : <PageContentLayout>{children}</PageContentLayout>}
         </div>
@@ -80,7 +78,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
-      <AppSidebarLayout pageBg={roleTheme.pageBg}>{children}</AppSidebarLayout>
+      <AppSidebarLayout pageBg={pageBg}>{children}</AppSidebarLayout>
     </SidebarProvider>
   );
 }
