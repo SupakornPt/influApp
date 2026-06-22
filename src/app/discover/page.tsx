@@ -2,6 +2,7 @@
 
 import { InfluencerCard } from "@/components/influencer-card";
 import { InfluencerDetailPanel } from "@/components/influencer-detail-panel";
+import { useSidebarOptional } from "@/components/sidebar-context";
 import { getMainFollowerPlatform } from "@/lib/influencer-platforms";
 import { getPageButtonClassForRoute, getPageSolidClassForRoute } from "@/lib/nav-theme";
 import { cn } from "@/lib/utils";
@@ -150,6 +151,8 @@ function DiscoverPageContent() {
   const searchParams = useSearchParams();
   const urlFromQuery = searchParams.get("url");
   const processedUrlRef = useRef<string | null>(null);
+  const sidebar = useSidebarOptional();
+  const collapsed = sidebar?.collapsed ?? false;
   const [sidebarSlot, setSidebarSlot] = useState<HTMLElement | null>(null);
   const [smartQuery, setSmartQuery] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
@@ -551,8 +554,9 @@ function DiscoverPageContent() {
   }, [generatedInfluencer, generatedInfluencerMeta, selectedInfluencer]);
 
   useEffect(() => {
-    setSidebarSlot(document.getElementById("app-sidebar-slot"));
-  }, []);
+    const targetId = collapsed ? "discover-filters-inline" : "app-sidebar-slot";
+    setSidebarSlot(document.getElementById(targetId));
+  }, [collapsed]);
 
   useEffect(() => {
     if (!selectedInfluencerId) return;
@@ -574,6 +578,8 @@ function DiscoverPageContent() {
           </div>
         </div>
       </div>
+
+      <div id="discover-filters-inline" className={collapsed ? undefined : "hidden"} />
 
       {sidebarSlot
         ? createPortal(
