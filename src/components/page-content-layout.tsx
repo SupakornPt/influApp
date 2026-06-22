@@ -1,6 +1,6 @@
 "use client";
 
-import { getPageBgClass } from "@/lib/nav-theme";
+import { getPageBgClass, SIDEBAR_SURFACE_CLASS } from "@/lib/nav-theme";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
@@ -144,7 +144,7 @@ export function PageContentLayout({
       {headerSubtitle ? <div className="max-w-3xl px-1">{headerSubtitle}</div> : null}
 
       {body ? (
-        <div className="min-h-[calc(100vh-14rem)] flex-1 rounded-2xl bg-[#F7FAFD] p-5 shadow-sm sm:p-6">{body}</div>
+        <div className={cn("min-h-[calc(100vh-14rem)] flex-1 rounded-2xl p-5 shadow-sm sm:p-6", SIDEBAR_SURFACE_CLASS)}>{body}</div>
       ) : null}
     </div>
   );

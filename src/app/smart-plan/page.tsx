@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, useMemo, useState } from "react";
-import Link from "next/link";
 import { getPageButtonClassForRoute, getPageSolidClassForRoute } from "@/lib/nav-theme";
 import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store/useUserStore";
@@ -309,28 +308,22 @@ export default function SmartPlanPage() {
 
   if (role !== "brand" && role !== "agency") {
     return (
-      <section className="p-6">
-        <h1 className="text-2xl font-bold text-slate-900">Smart Plan</h1>
-        <p className="mt-2 text-sm text-slate-600">
-          This feature is available for agency and brand workspaces. Switch role to continue.
-        </p>
+      <section className="space-y-5">
+        <div className={cn("rounded-2xl p-6 text-white shadow-sm", pageSolid)}>
+          <h1 className="text-2xl font-bold">Smart Plan</h1>
+          <p className="mt-1 text-sm text-white/80">
+            This feature is available for agency and brand workspaces. Switch role to continue.
+          </p>
+        </div>
       </section>
     );
   }
 
   return (
-    <section className="space-y-6 p-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Smart Plan</h1>
-          <p className="mt-1 text-sm text-slate-600">Plan your campaign from requirements through the creative brief.</p>
-        </div>
-        <Link
-          href="/dashboard"
-          className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-        >
-          Back
-        </Link>
+    <section className="space-y-5">
+      <div className={cn("rounded-2xl p-6 text-white shadow-sm", pageSolid)}>
+        <h1 className="text-2xl font-bold">Smart Plan</h1>
+        <p className="mt-1 text-sm text-white/80">Plan your campaign from requirements through the creative brief.</p>
       </div>
 
       {viewMode === "list" && (

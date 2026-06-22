@@ -1,3 +1,5 @@
+export const SIDEBAR_SURFACE_CLASS = "bg-gradient-to-b from-white via-slate-50/80 to-slate-100/60";
+
 const NAV_ROUTES = [
   "/smart-plan",
   "/dashboard",
