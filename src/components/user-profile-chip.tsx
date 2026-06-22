@@ -6,6 +6,13 @@ import { getAvatarUrl } from "@/lib/avatar";
 import { cn } from "@/lib/utils";
 import { useRoleTheme } from "@/lib/use-role-theme";
 import { useUserStore } from "@/store/useUserStore";
+import type { Role } from "@/lib/types";
+
+function roleLabel(role: Role) {
+  if (role === "brand") return "Brand";
+  if (role === "influencer") return "Creator";
+  return "Agency";
+}
 
 export function UserProfileChip() {
   const pathname = usePathname() ?? "";
@@ -18,7 +25,7 @@ export function UserProfileChip() {
     <Link
       href="/profile"
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-1 py-0.5 pr-2 shadow-sm transition-colors",
+        "inline-flex items-center gap-2 rounded-2xl px-2 py-1.5 pr-3 shadow-sm transition-colors",
         isProfileActive ? roleTheme.profileChipActive : roleTheme.profileChip
       )}
       aria-current={isProfileActive ? "page" : undefined}
@@ -27,11 +34,16 @@ export function UserProfileChip() {
         src={avatarUrl}
         alt=""
         className={cn(
-          "h-6 w-6 rounded-full object-cover",
+          "h-8 w-8 rounded-full object-cover",
           isProfileActive ? "border border-white/40" : "border border-black/10"
         )}
       />
-      <span className="max-w-[96px] truncate text-xs font-semibold">{name}</span>
+      <div className="min-w-0 text-left leading-tight">
+        <p className="max-w-[108px] truncate text-xs font-semibold">{name}</p>
+        <p className={cn("max-w-[108px] truncate text-[10px] font-medium", isProfileActive ? "text-white/80" : "opacity-70")}>
+          {roleLabel(role)}
+        </p>
+      </div>
     </Link>
   );
 }

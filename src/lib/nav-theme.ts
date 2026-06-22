@@ -43,6 +43,24 @@ const NAV_ACCENT_TEXT_CLASSES: Record<string, string> = {
   "/tracking": "text-nav-forest-900"
 };
 
+const NAV_INDICATOR_CLASSES: Record<string, string> = {
+  "/dashboard": "bg-slate-600",
+  "/campaigns": "bg-nav-bronze-900",
+  "/messages": "bg-nav-teal-900",
+  "/discover": "bg-nav-ocean-900",
+  "/smart-plan": "bg-nav-burnt-900",
+  "/tracking": "bg-nav-forest-900"
+};
+
+const NAV_ICON_ACTIVE_CLASSES: Record<string, string> = {
+  "/dashboard": "text-slate-800",
+  "/campaigns": "text-nav-bronze-900",
+  "/messages": "text-nav-teal-900",
+  "/discover": "text-nav-ocean-900",
+  "/smart-plan": "text-nav-burnt-900",
+  "/tracking": "text-nav-forest-900"
+};
+
 function matchNavRoute(pathname: string): string {
   const match = NAV_ROUTES.find((route) => pathname === route || pathname.startsWith(`${route}/`));
   return match ?? "/dashboard";
@@ -53,7 +71,15 @@ export function getNavActiveClass(href: string): string {
 }
 
 export function getNavLinkClass(href: string, isActive: boolean): string {
-  return isActive ? getNavActiveClass(href) : "text-slate-700 hover:bg-slate-100";
+  return isActive ? getNavActiveClass(href) : "text-slate-600 hover:bg-white/70 hover:text-slate-900";
+}
+
+export function getNavIndicatorClass(href: string): string {
+  return NAV_INDICATOR_CLASSES[href] ?? NAV_INDICATOR_CLASSES["/dashboard"];
+}
+
+export function getNavIconActiveClass(href: string): string {
+  return NAV_ICON_ACTIVE_CLASSES[href] ?? NAV_ICON_ACTIVE_CLASSES["/dashboard"];
 }
 
 export function getPageButtonClass(pathname: string): string {

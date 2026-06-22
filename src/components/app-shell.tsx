@@ -51,9 +51,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <main className={cn("min-h-screen w-full transition-colors duration-300", roleTheme.pageBg)}>
       <div className="flex min-h-screen w-full flex-col lg:flex-row">
-        <aside className="flex w-full shrink-0 flex-col lg:w-[220px] lg:min-h-screen lg:border-r lg:border-slate-200/80 lg:bg-[#F7FAFD]">
+        <aside className="flex w-full shrink-0 flex-col border-b border-slate-200/70 bg-gradient-to-b from-white via-slate-50/80 to-slate-100/60 lg:sticky lg:top-0 lg:h-screen lg:w-[260px] lg:border-b-0 lg:border-r">
           <Navigation />
-          <div id="app-sidebar-slot" className="mt-4 px-3 pb-4" />
+          <div id="app-sidebar-slot" className="min-h-0 flex-1 overflow-y-auto px-3 pb-4 lg:px-4" />
         </aside>
         <section className="relative min-w-0 flex-1 px-4 pb-6 pt-4 lg:px-6 lg:pt-5">
           {isPageContentLayout(children) ? children : <PageContentLayout>{children}</PageContentLayout>}
