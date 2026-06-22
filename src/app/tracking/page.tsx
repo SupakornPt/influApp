@@ -5,7 +5,13 @@ import { Suspense } from "react";
 import { useEffect } from "react";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { getPageAccentTextClassForRoute, getPageButtonClassForRoute, getPageSolidClassForRoute } from "@/lib/nav-theme";
+import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store/useUserStore";
+
+const pageBtn = getPageButtonClassForRoute("/tracking");
+const pageSolid = getPageSolidClassForRoute("/tracking");
+const pageAccent = getPageAccentTextClassForRoute("/tracking");
 import { brandCampaigns, trackingByCampaign } from "@/mock/brand-campaigns";
 import { exportRowsToExcel } from "@/lib/excel";
 
@@ -77,9 +83,9 @@ function TrackingPageContent() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 p-6 text-white shadow-sm">
+      <div className={cn("rounded-2xl p-6 text-white shadow-sm", pageSolid)}>
         <h1 className="text-2xl font-bold">Tracking</h1>
-        <p className="mt-1 text-sm text-indigo-100">Realtime-style results for published work (demo data).</p>
+        <p className="mt-1 text-sm text-white/80">Realtime-style results for published work (demo data).</p>
       </div>
 
       <article className="overflow-hidden rounded-2xl bg-white shadow-sm">
@@ -114,7 +120,7 @@ function TrackingPageContent() {
                       <button
                         type="button"
                         onClick={() => setSelectedId(c.id)}
-                        className="text-sm font-semibold text-indigo-600 hover:underline"
+                        className={cn("text-sm font-semibold hover:underline", pageAccent)}
                       >
                         View detail
                       </button>
@@ -147,7 +153,7 @@ function TrackingPageContent() {
                 type="button"
                 onClick={exportExcel}
                 disabled={detailRows.length === 0}
-                className="rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                className={cn("rounded-lg px-3 py-1.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50", pageBtn)}
               >
                 Export Excel
               </button>

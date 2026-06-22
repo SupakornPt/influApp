@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { getPageButtonClassForRoute } from "@/lib/nav-theme";
+import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store/useUserStore";
+
+const pageBtn = getPageButtonClassForRoute("/campaigns");
 
 export default function CreateCampaignPage() {
   const router = useRouter();
@@ -137,7 +141,7 @@ export default function CreateCampaignPage() {
         </fieldset>
 
         <div className="flex flex-wrap gap-2 pt-2">
-          <button type="submit" className="rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white">
+          <button type="submit" className={cn("rounded-xl px-4 py-2.5 text-sm font-semibold transition", pageBtn)}>
             Save campaign (demo)
           </button>
           <Link href="/campaigns" className="rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700">

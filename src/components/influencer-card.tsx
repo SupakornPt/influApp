@@ -1,5 +1,10 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { getMainFollowerPlatform } from "@/lib/influencer-platforms";
+import { getPageButtonClass } from "@/lib/nav-theme";
 import { Influencer } from "@/lib/types";
+import { cn } from "@/lib/utils";
 import type { IconType } from "react-icons";
 import { FaGlobe, FaLinkedinIn, FaMobileAlt } from "react-icons/fa";
 import {
@@ -48,6 +53,8 @@ interface InfluencerCardProps {
 }
 
 export function InfluencerCard({ influencer, isActive = false, onSelect }: InfluencerCardProps) {
+  const pathname = usePathname() ?? "";
+  const pageBtn = getPageButtonClass(pathname);
   const avatarUrl = `https://api.dicebear.com/9.x/thumbs/svg?seed=${encodeURIComponent(influencer.name)}`;
   const main = getMainFollowerPlatform(influencer);
   const presentationTags = Array.from(
@@ -125,7 +132,7 @@ export function InfluencerCard({ influencer, isActive = false, onSelect }: Influ
           onClick={(event) => {
             event.stopPropagation();
           }}
-          className="w-full rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          className={cn("w-full rounded-xl px-3 py-2 text-sm font-semibold transition", pageBtn)}
         >
           Add to list
         </button>

@@ -38,6 +38,10 @@ export const useUserStore = create<UserState>()(
         }
       }
     }),
-    { name: "influapp-user" }
+    {
+      name: "influapp-user",
+      // Defer localStorage read until after mount so SSR and first client render match.
+      skipHydration: true
+    }
   )
 );

@@ -2,8 +2,13 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { getPageButtonClassForRoute, getPageSolidClassForRoute } from "@/lib/nav-theme";
+import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store/useUserStore";
 import { brandCampaigns, type BrandCampaignListItem } from "@/mock/brand-campaigns";
+
+const pageBtn = getPageButtonClassForRoute("/campaigns");
+const pageSolid = getPageSolidClassForRoute("/campaigns");
 
 type InfCampaignItem = {
   id: string;
@@ -97,11 +102,11 @@ function BrandCampaignsView() {
 
   return (
     <section className="space-y-5">
-      <div className="rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 p-6 text-white shadow-sm">
+      <div className={cn("rounded-2xl p-6 text-white shadow-sm", pageSolid)}>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold">Campaigns</h1>
-            <p className="mt-1 text-sm text-indigo-100">
+            <p className="mt-1 text-sm text-white/80">
               Public campaigns appear on the influencer marketplace; private campaigns use Discover to invite creators.
             </p>
             <div className="mt-3 inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-semibold">
@@ -110,7 +115,7 @@ function BrandCampaignsView() {
           </div>
           <Link
             href="/campaigns/create"
-            className="shrink-0 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-indigo-700 shadow-sm hover:bg-indigo-50"
+            className="shrink-0 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-nav-bronze-900 shadow-sm hover:bg-nav-bronze-100"
           >
             Create campaign
           </Link>
@@ -249,9 +254,9 @@ function InfluencerDiscoverCampaignsView() {
 
   return (
     <section className="space-y-5">
-      <div className="rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 p-6 text-white shadow-sm">
+      <div className={cn("rounded-2xl p-6 text-white shadow-sm", pageSolid)}>
         <h1 className="text-2xl font-bold">Discover Campaigns</h1>
-        <p className="mt-1 text-sm text-indigo-100">
+        <p className="mt-1 text-sm text-white/80">
           Find the best-fit collaborations with fast filters and clear budget visibility.
         </p>
         <div className="mt-4 inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-semibold">
@@ -383,7 +388,7 @@ function InfluencerDiscoverCampaignsView() {
                 <li>Deadline: {campaign.deadline}</li>
               </ul>
               <div className="mt-4 flex gap-2">
-                <button className="rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-white">Apply</button>
+                <button className={cn("rounded-lg px-3 py-1.5 text-sm font-semibold transition", pageBtn)}>Apply</button>
                 <Link
                   href={`/campaigns/${campaign.id}`}
                   className="rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-700"

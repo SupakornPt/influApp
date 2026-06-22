@@ -1,7 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { getPageButtonClassForRoute } from "@/lib/nav-theme";
+import { cn } from "@/lib/utils";
 import { brandCampaigns } from "@/mock/brand-campaigns";
+
+const pageBtn = getPageButtonClassForRoute("/dashboard");
 
 const kpis = [
   { label: "Active Campaigns", value: "2" },
@@ -63,7 +67,7 @@ export function BrandDashboard() {
           <p className="mt-2 text-sm text-slate-600">Find creators for private campaigns.</p>
           <Link
             href="/discover"
-            className="mt-3 inline-flex rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white"
+            className={cn("mt-3 inline-flex rounded-xl px-4 py-2 text-sm font-semibold transition", pageBtn)}
           >
             Open Discover
           </Link>

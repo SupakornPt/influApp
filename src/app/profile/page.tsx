@@ -2,7 +2,10 @@
 
 import { Download, Heart, Upload } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
+import { ProfileCard } from "@/components/profile-card";
 import type { Role } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { useRoleTheme } from "@/lib/use-role-theme";
 import {
   buildMediaKitExportPayload,
   parseMediaKitImportFile,
@@ -55,7 +58,7 @@ function ProfileReviewsSection({ role }: { role: Role }) {
   );
 
   return (
-    <article className="rounded-2xl bg-white p-5 shadow-sm">
+    <ProfileCard>
       <h2 className="text-lg font-semibold text-slate-900">Partner review ratings</h2>
       <p className="mt-1 text-xs text-slate-500">
         Ratings use your account display name (same as when you submit reviews on a finished campaign).
@@ -96,7 +99,7 @@ function ProfileReviewsSection({ role }: { role: Role }) {
           )}
         </div>
       </div>
-    </article>
+    </ProfileCard>
   );
 }
 
@@ -130,6 +133,7 @@ const mockAgencyProfile = {
 
 function BrandProfileView() {
   const { role } = useUserStore();
+  const roleTheme = useRoleTheme();
   const profileRole: Role = role === "agency" ? "agency" : "brand";
   const base = role === "agency" ? mockAgencyProfile : mockBrandProfile;
   const [companyName, setCompanyName] = useState(base.companyName);
@@ -152,11 +156,13 @@ function BrandProfileView() {
 
   return (
     <section key={role} className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-900">{heading}</h1>
-      <p className="text-slate-600">{subline} Manage your password in Account.</p>
+      <div className={cn("rounded-2xl p-6 text-white shadow-sm", roleTheme.profileHeader)}>
+        <h1 className="text-2xl font-bold">{heading}</h1>
+        <p className="mt-1 text-sm text-white/80">{subline} Manage your password in Account.</p>
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
-        <article className="rounded-2xl bg-white p-5 shadow-sm">
+        <ProfileCard>
           <div className="flex flex-col items-center text-center">
             <ProfileRatingAvatar
               src={avatarUrl}
@@ -165,14 +171,14 @@ function BrandProfileView() {
               role={profileRole}
             />
             <p className="mt-3 text-sm text-slate-500">Company logo (demo)</p>
-            <button type="button" className="mt-2 text-sm font-semibold text-indigo-600 hover:underline">
+            <button type="button" className={cn("mt-2 text-sm font-semibold hover:underline", roleTheme.profileAccent)}>
               Change image
             </button>
           </div>
-        </article>
+        </ProfileCard>
 
         <div className="space-y-4">
-          <article className="rounded-2xl bg-white p-5 shadow-sm">
+          <ProfileCard>
             <h2 className="text-lg font-semibold text-slate-900">Company &amp; user</h2>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <label className="block text-sm">
@@ -284,14 +290,14 @@ function BrandProfileView() {
               </div>
             </div>
 
-            <button type="button" className="mt-4 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white">
+            <button type="button" className={cn("mt-4 rounded-xl px-4 py-2 text-sm font-semibold transition", roleTheme.profileChipActive)}>
               Save changes (demo)
             </button>
-          </article>
+          </ProfileCard>
 
           <ProfileReviewsSection role={profileRole} />
 
-          <article className="rounded-2xl bg-white p-5 shadow-sm">
+          <ProfileCard>
             <h2 className="text-lg font-semibold text-slate-900">Account</h2>
             <p className="mt-1 text-sm text-slate-600">Change password and security settings (wireframe).</p>
             <div className="mt-3 grid gap-3 sm:max-w-md">
@@ -305,11 +311,14 @@ function BrandProfileView() {
                 placeholder="New password"
                 className="rounded-xl border border-slate-200 px-3 py-2 text-sm"
               />
-              <button type="button" className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-800">
+              <button
+                type="button"
+                className={cn("rounded-xl px-4 py-2 text-sm font-semibold transition", roleTheme.profileChipActive)}
+              >
                 Update password
               </button>
             </div>
-          </article>
+          </ProfileCard>
         </div>
       </div>
     </section>
@@ -317,6 +326,7 @@ function BrandProfileView() {
 }
 
 function InfluencerProfileView() {
+  const roleTheme = useRoleTheme();
   const kit = useMediaKitStore();
   const setKit = useMediaKitStore((s) => s.setKit);
   const setSocialRow = useMediaKitStore((s) => s.setSocialRow);
@@ -376,20 +386,24 @@ function InfluencerProfileView() {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Media kit</h1>
-          <p className="mt-1 text-sm text-slate-600">
-            Edit the fields brands see in discovery. Download a JSON backup or upload a previously exported JSON; you can also attach a PDF kit
-            for your records (demo: file name only).
-          </p>
-        </div>
+      <div className={cn("rounded-2xl p-6 text-white shadow-sm", roleTheme.profileHeader)}>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold">Media kit</h1>
+            <p className="mt-1 text-sm text-white/80">
+              Edit the fields brands see in discovery. Download a JSON backup or upload a previously exported JSON; you can also attach a PDF kit
+              for your records (demo: file name only).
+            </p>
+          </div>
         <div className="flex flex-wrap items-center gap-2">
           <input ref={uploadRef} type="file" accept=".json,application/json,application/pdf,.pdf" className="hidden" onChange={onUploadFiles} />
           <button
             type="button"
             onClick={() => uploadRef.current?.click()}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50"
+            className={cn(
+              "inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold shadow-sm transition",
+              roleTheme.profileOutlineButton
+            )}
           >
             <Upload className="h-4 w-4" aria-hidden />
             Upload JSON / PDF
@@ -397,16 +411,17 @@ function InfluencerProfileView() {
           <button
             type="button"
             onClick={downloadMediaKitJson}
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:opacity-95"
+            className={cn("inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold shadow-sm transition", roleTheme.profileHeaderButton)}
           >
             <Download className="h-4 w-4" aria-hidden />
             Download JSON
           </button>
         </div>
+        </div>
       </div>
 
       {importMessage ? (
-        <p className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-900" role="status">
+        <p className={cn("rounded-xl px-4 py-3 text-sm", roleTheme.profileNotice)} role="status">
           {importMessage}
         </p>
       ) : null}
@@ -416,7 +431,7 @@ function InfluencerProfileView() {
           PDF on file: <span className="font-semibold text-slate-900">{kit.uploadedPdfFileName}</span>{" "}
           <button
             type="button"
-            className="ml-2 text-sm font-semibold text-indigo-600 hover:underline"
+            className={cn("ml-2 text-sm font-semibold hover:underline", roleTheme.profileAccent)}
             onClick={() => {
               setUploadedPdfFileName(null);
               setImportMessage("PDF attachment cleared.");
@@ -428,7 +443,7 @@ function InfluencerProfileView() {
       ) : null}
 
       <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
-        <article className="rounded-2xl bg-white p-5 shadow-sm">
+        <ProfileCard>
           <div className="flex items-center gap-3">
             <ProfileRatingAvatar
               src={avatarUrl}
@@ -499,10 +514,10 @@ function InfluencerProfileView() {
               />
             </label>
           </div>
-        </article>
+        </ProfileCard>
 
         <div className="space-y-4">
-          <article className="rounded-2xl bg-white p-5 shadow-sm">
+          <ProfileCard>
             <h2 className="text-lg font-semibold text-slate-900">Audience snapshot</h2>
             <p className="mt-1 text-xs text-slate-500">Headline numbers brands scan first on a media kit.</p>
             <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -548,9 +563,9 @@ function InfluencerProfileView() {
                 />
               </label>
             </div>
-          </article>
+          </ProfileCard>
 
-          <article className="rounded-2xl bg-white p-5 shadow-sm">
+          <ProfileCard>
             <h2 className="text-lg font-semibold text-slate-900">Platforms &amp; handles</h2>
             <div className="mt-3 space-y-3">
               {kit.socialAccounts.map((account, index) => (
@@ -607,14 +622,14 @@ function InfluencerProfileView() {
                 </div>
               ))}
             </div>
-          </article>
+          </ProfileCard>
         </div>
       </div>
 
       <ProfileReviewsSection role="influencer" />
 
       <div className="grid gap-4 md:grid-cols-2">
-        <article className="rounded-2xl bg-white p-5 shadow-sm">
+        <ProfileCard>
           <h2 className="text-lg font-semibold text-slate-900">Niches &amp; deliverables</h2>
           <label className="mt-3 block text-sm">
             <span className="text-slate-600">Categories (comma or newline separated)</span>
@@ -634,9 +649,9 @@ function InfluencerProfileView() {
               className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2"
             />
           </label>
-        </article>
+        </ProfileCard>
 
-        <article className="rounded-2xl bg-white p-5 shadow-sm">
+        <ProfileCard>
           <h2 className="text-lg font-semibold text-slate-900">Audience insights</h2>
           <label className="mt-3 block text-sm">
             <span className="text-slate-600">Gender mix</span>
@@ -672,11 +687,11 @@ function InfluencerProfileView() {
               className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2"
             />
           </label>
-        </article>
+        </ProfileCard>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <article className="rounded-2xl bg-white p-5 shadow-sm">
+        <ProfileCard>
           <h2 className="text-lg font-semibold text-slate-900">Rate card (THB)</h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             <label className="block text-sm">
@@ -710,9 +725,9 @@ function InfluencerProfileView() {
               />
             </label>
           </div>
-        </article>
+        </ProfileCard>
 
-        <article className="rounded-2xl bg-white p-5 shadow-sm">
+        <ProfileCard>
           <h2 className="text-lg font-semibold text-slate-900">Case highlights &amp; partners</h2>
           <label className="mt-3 block text-sm">
             <span className="text-slate-600">Portfolio lines (one per line)</span>
@@ -746,11 +761,11 @@ function InfluencerProfileView() {
               className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 font-mono text-xs"
             />
           </label>
-        </article>
+        </ProfileCard>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <article className="rounded-2xl bg-white p-5 shadow-sm">
+        <ProfileCard>
           <h2 className="text-lg font-semibold text-slate-900">Availability</h2>
           <label className="mt-2 block text-sm">
             <span className="text-slate-600">Status</span>
@@ -760,9 +775,9 @@ function InfluencerProfileView() {
               className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2"
             />
           </label>
-        </article>
+        </ProfileCard>
 
-        <article className="rounded-2xl bg-white p-5 shadow-sm">
+        <ProfileCard>
           <h2 className="text-lg font-semibold text-slate-900">Settings</h2>
           <label className="mt-2 flex items-center gap-2 text-sm text-slate-700">
             <input
@@ -796,7 +811,7 @@ function InfluencerProfileView() {
               className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2"
             />
           </label>
-        </article>
+        </ProfileCard>
       </div>
     </section>
   );

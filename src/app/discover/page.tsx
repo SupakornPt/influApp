@@ -3,11 +3,16 @@
 import { InfluencerCard } from "@/components/influencer-card";
 import { InfluencerDetailPanel } from "@/components/influencer-detail-panel";
 import { getMainFollowerPlatform } from "@/lib/influencer-platforms";
+import { getPageButtonClassForRoute, getPageSolidClassForRoute } from "@/lib/nav-theme";
+import { cn } from "@/lib/utils";
 import { Influencer } from "@/lib/types";
 import { influencers } from "@/mock/influencers";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+
+const pageBtn = getPageButtonClassForRoute("/discover");
+const pageSolid = getPageSolidClassForRoute("/discover");
 
 type FollowerRange = "All" | "Nano" | "Micro" | "Mid" | "Macro" | "Mega";
 type InfluencerMeta = {
@@ -558,11 +563,11 @@ function DiscoverPageContent() {
 
   return (
     <section className="space-y-4 rounded-3xl bg-gradient-to-b from-indigo-50/80 via-slate-50 to-slate-50 p-4 lg:p-6">
-      <div className="mb-4 rounded-3xl bg-gradient-to-r from-indigo-600 via-indigo-600 to-violet-600 p-6 text-white shadow-lg shadow-indigo-200">
+      <div className={cn("mb-4 rounded-3xl p-6 text-white shadow-sm", pageSolid)}>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold">Discover Influencers</h1>
-            <p className="mt-1 text-sm text-indigo-100">Find campaign-fit creators with smart filters and audience signals.</p>
+            <p className="mt-1 text-sm text-white/80">Find campaign-fit creators with smart filters and audience signals.</p>
           </div>
           <div className="inline-flex rounded-full bg-white/20 px-3 py-1 text-xs font-semibold text-white">
             {filtered.length} influencers matched
@@ -924,7 +929,7 @@ function DiscoverPageContent() {
               <button
                 type="button"
                 onClick={handleUnifiedSearch}
-                className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
+                className={cn("rounded-xl px-4 py-2 text-sm font-semibold transition", pageBtn)}
               >
                 Search
               </button>

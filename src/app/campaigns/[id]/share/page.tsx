@@ -4,6 +4,10 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { getMainFollowerPlatform } from "@/lib/influencer-platforms";
+import { getPageButtonClassForRoute } from "@/lib/nav-theme";
+import { cn } from "@/lib/utils";
+
+const pageBtn = getPageButtonClassForRoute("/campaigns");
 import { brandCampaigns } from "@/mock/brand-campaigns";
 import { influencers } from "@/mock/influencers";
 
@@ -238,7 +242,7 @@ export default function CampaignSharePreviewPage() {
             <button
               type="button"
               onClick={() => pushMessage("agency", agencyDraft, () => setAgencyDraft(""))}
-              className="mt-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
+              className={cn("mt-2 rounded-xl px-4 py-2 text-sm font-semibold transition", pageBtn)}
             >
               Post as agency
             </button>

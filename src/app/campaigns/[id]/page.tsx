@@ -5,12 +5,16 @@ import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { CampaignPartnerReviews } from "@/components/CampaignPartnerReviews";
 import { resolveBrandCampaignId } from "@/lib/campaign-id-bridge";
+import { getPageButtonClassForRoute } from "@/lib/nav-theme";
+import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store/useUserStore";
 import { useCampaignCollaborationStore } from "@/store/useCampaignCollaborationStore";
 import { brandCampaigns, trackingByCampaign } from "@/mock/brand-campaigns";
 import { getMainFollowerPlatform } from "@/lib/influencer-platforms";
 import { influencers } from "@/mock/influencers";
 import { exportRowsToExcel } from "@/lib/excel";
+
+const pageBtn = getPageButtonClassForRoute("/campaigns");
 
 export default function CampaignDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -147,7 +151,7 @@ export default function CampaignDetailPage() {
               <button
                 type="button"
                 onClick={markCampaignFinished}
-                className="mt-3 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700"
+                className={cn("mt-3 rounded-lg px-3 py-2 text-xs font-semibold transition", pageBtn)}
               >
                 Mark campaign as finished
               </button>
@@ -263,7 +267,7 @@ export default function CampaignDetailPage() {
             <div className="mt-3 flex flex-wrap gap-2">
               <Link
                 href="/discover"
-                className="rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-white"
+                className={cn("rounded-lg px-3 py-1.5 text-sm font-semibold transition", pageBtn)}
               >
                 Discover influencers
               </Link>
@@ -320,7 +324,7 @@ export default function CampaignDetailPage() {
               <button
                 type="button"
                 onClick={exportInfluencersExcel}
-                className="rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-white"
+                className={cn("rounded-lg px-3 py-1.5 text-sm font-semibold transition", pageBtn)}
               >
                 Export Excel
               </button>
@@ -377,7 +381,7 @@ export default function CampaignDetailPage() {
             <p className="mt-1 text-sm text-slate-600">Summer Skincare Awareness Campaign</p>
           </div>
           <div className="flex gap-2">
-            <button className="rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-white">Apply Now</button>
+            <button className={cn("rounded-lg px-3 py-1.5 text-sm font-semibold transition", pageBtn)}>Apply Now</button>
             <button className="rounded-lg bg-slate-100 px-3 py-1.5 text-sm font-semibold text-slate-700">Save</button>
           </div>
         </div>
@@ -456,7 +460,7 @@ export default function CampaignDetailPage() {
             <li>GlowLab official profile</li>
             <li>Past campaigns available on request</li>
           </ul>
-          <button className="mt-4 rounded-lg bg-primary px-3 py-1.5 text-sm font-semibold text-white">Message Brand</button>
+          <button className={cn("mt-4 rounded-lg px-3 py-1.5 text-sm font-semibold transition", pageBtn)}>Message Brand</button>
         </article>
       </div>
 

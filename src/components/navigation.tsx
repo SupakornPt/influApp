@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { getNavLinkClass } from "@/lib/nav-theme";
 import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store/useUserStore";
 
@@ -11,15 +12,13 @@ const brandLinks = [
   { href: "/discover", label: "Discover" },
   { href: "/smart-plan", label: "Smart Plan" },
   { href: "/messages", label: "Message" },
-  { href: "/tracking", label: "Tracking" },
-  { href: "/profile", label: "Profile" }
+  { href: "/tracking", label: "Tracking" }
 ];
 
 const influencerLinks = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/campaigns", label: "Campaign" },
-  { href: "/messages", label: "Message" },
-  { href: "/profile", label: "Profile" }
+  { href: "/messages", label: "Message" }
 ];
 
 function isNavActive(pathname: string, href: string) {
@@ -100,8 +99,8 @@ export function Navigation() {
             key={link.href}
             href={link.href}
             className={cn(
-              "rounded-xl px-4 py-2 text-sm font-medium transition",
-              isNavActive(pathname, link.href) ? "bg-primary text-white" : "text-slate-700 hover:bg-slate-100"
+              "rounded-xl px-4 py-2 text-sm font-medium transition-colors",
+              getNavLinkClass(link.href, isNavActive(pathname, link.href))
             )}
           >
             {link.label}

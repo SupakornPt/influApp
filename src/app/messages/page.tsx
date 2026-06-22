@@ -1,7 +1,12 @@
 "use client";
 
 import { ProcessOfWorkPanel, WorkStatusDot, WorkStatusIndicator, type WorkPhase } from "@/components/messages/process-of-work-panel";
+import { getPageButtonClassForRoute, getPageSolidClassForRoute } from "@/lib/nav-theme";
+import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store/useUserStore";
+
+const pageBtn = getPageButtonClassForRoute("/messages");
+const pageSolid = getPageSolidClassForRoute("/messages");
 
 const influencerConversations: {
   brand: string;
@@ -34,9 +39,9 @@ function InfluencerMessagesView() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 p-6 text-white shadow-sm">
+      <div className={cn("rounded-2xl p-6 text-white shadow-sm", pageSolid)}>
         <h1 className="text-2xl font-bold">Messages</h1>
-        <p className="mt-1 text-sm text-indigo-100">Manage active conversations, files, and campaign workflow in one place.</p>
+        <p className="mt-1 text-sm text-white/80">Manage active conversations, files, and campaign workflow in one place.</p>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[280px_1fr]">
@@ -103,7 +108,7 @@ function InfluencerMessagesView() {
               <p className="mt-1 text-[11px] text-slate-400">10:04</p>
             </div>
 
-            <div className="ml-auto w-fit max-w-[80%] rounded-2xl rounded-tr-md bg-indigo-600 px-3 py-2 text-sm text-white">
+            <div className={cn("ml-auto w-fit max-w-[80%] rounded-2xl rounded-tr-md px-3 py-2 text-sm text-white", pageSolid)}>
               Sure! I&apos;ll send the TikTok draft tomorrow for early review.
               <p className="mt-1 text-[11px] text-indigo-200">10:07 • Seen</p>
             </div>
@@ -121,7 +126,7 @@ function InfluencerMessagesView() {
 
           <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
             <input placeholder="Type your message..." className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
-            <button className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">Send</button>
+            <button className={cn("rounded-xl px-4 py-2 text-sm font-semibold transition", pageBtn)}>Send</button>
           </div>
         </article>
       </div>
@@ -134,9 +139,9 @@ function BrandMessagesView() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 p-6 text-white shadow-sm">
+      <div className={cn("rounded-2xl p-6 text-white shadow-sm", pageSolid)}>
         <h1 className="text-2xl font-bold">Messages</h1>
-        <p className="mt-1 text-sm text-indigo-100">Chat with influencers, filter by campaign, and keep briefs in context.</p>
+        <p className="mt-1 text-sm text-white/80">Chat with influencers, filter by campaign, and keep briefs in context.</p>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[280px_1fr]">
@@ -198,7 +203,7 @@ function BrandMessagesView() {
           <div className="space-y-3 py-4">
             <p className="text-center text-xs text-slate-400">Today</p>
 
-            <div className="ml-auto w-fit max-w-[80%] rounded-2xl rounded-tr-md bg-indigo-600 px-3 py-2 text-sm text-white">
+            <div className={cn("ml-auto w-fit max-w-[80%] rounded-2xl rounded-tr-md px-3 py-2 text-sm text-white", pageSolid)}>
               Hi Lina, can you submit the first draft by Friday 5 PM?
               <p className="mt-1 text-[11px] text-indigo-200">10:04</p>
             </div>
@@ -208,7 +213,7 @@ function BrandMessagesView() {
               <p className="mt-1 text-[11px] text-slate-400">10:07</p>
             </div>
 
-            <div className="ml-auto w-fit max-w-[80%] rounded-2xl rounded-tr-md bg-indigo-600 px-3 py-2 text-sm text-white">
+            <div className={cn("ml-auto w-fit max-w-[80%] rounded-2xl rounded-tr-md px-3 py-2 text-sm text-white", pageSolid)}>
               Attached: updated brief + do/don&apos;t list. Ping me if anything is unclear.
               <p className="mt-1 text-[11px] text-indigo-200">10:10</p>
             </div>
@@ -216,7 +221,7 @@ function BrandMessagesView() {
 
           <div className="mt-3 flex items-center gap-2 border-t border-slate-100 pt-3">
             <input placeholder="Type a message to influencer…" className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
-            <button className="rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">Send</button>
+            <button className={cn("rounded-xl px-4 py-2 text-sm font-semibold transition", pageBtn)}>Send</button>
           </div>
         </article>
       </div>

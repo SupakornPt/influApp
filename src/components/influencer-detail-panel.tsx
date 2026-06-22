@@ -1,5 +1,10 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { getMainFollowerPlatform, getShowcaseDemoEmbed, getTopAvgViewsPlatform } from "@/lib/influencer-platforms";
+import { getPageButtonClass } from "@/lib/nav-theme";
 import { Influencer } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface InfluencerMeta {
   country: string;
@@ -43,6 +48,7 @@ const getTone = (styles: string[]) => {
 };
 
 export function InfluencerDetailPanel({ influencer, meta, onClose }: InfluencerDetailPanelProps) {
+  const pageBtn = getPageButtonClass(usePathname() ?? "");
   const topCountries = getTopCountries(meta.country);
   const topCities = getTopCities(meta.city);
   const engagementAuthenticity = Math.min(99, Math.round((meta.qualityScore + influencer.performanceScore) / 2));
@@ -245,7 +251,7 @@ export function InfluencerDetailPanel({ influencer, meta, onClose }: InfluencerD
           <section className="rounded-xl border border-slate-200 p-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Next step</p>
             <div className="mt-2 grid grid-cols-2 gap-2">
-              <button type="button" className="rounded-lg bg-indigo-600 px-2 py-2 text-xs font-semibold text-white hover:bg-indigo-700">
+              <button type="button" className={cn("rounded-lg px-2 py-2 text-xs font-semibold transition", pageBtn)}>
                 Add to list
               </button>
               <button type="button" className="rounded-lg border border-slate-200 px-2 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">

@@ -1,7 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { getPageButtonClassForRoute } from "@/lib/nav-theme";
 import type { Role } from "@/lib/types";
+import { cn } from "@/lib/utils";
+
+const pageBtn = getPageButtonClassForRoute("/campaigns");
 import { parseParticipantKey, participantKey } from "@/lib/campaign-participants";
 import { useCampaignCollaborationStore } from "@/store/useCampaignCollaborationStore";
 import { useReviewStore } from "@/store/useReviewStore";
@@ -149,7 +153,7 @@ export function CampaignPartnerReviews({ campaignId, campaignName, currentRole, 
                         setMessage({ type: "err", text: result.reason });
                       }
                     }}
-                    className="rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white hover:bg-indigo-700"
+                    className={cn("rounded-lg px-3 py-2 text-xs font-semibold transition", pageBtn)}
                   >
                     Submit review
                   </button>
