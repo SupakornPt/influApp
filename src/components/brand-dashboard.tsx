@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { DashboardHeaderAction, DashboardPageHeader } from "@/components/dashboard-page-header";
 import { getPageButtonClassForRoute } from "@/lib/nav-theme";
 import { cn } from "@/lib/utils";
 import { brandCampaigns } from "@/mock/brand-campaigns";
@@ -19,11 +20,17 @@ export function BrandDashboard() {
   const active = brandCampaigns.filter((c) => c.status === "active");
 
   return (
-    <section className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-slate-900">Brand Dashboard</h1>
-        <p className="mt-2 text-slate-600">Quick overview of performance, spend, and active collaborations.</p>
-      </div>
+    <section className="space-y-5">
+      <DashboardPageHeader
+        title="Brand Dashboard"
+        subtitle="Quick overview of performance, spend, and active collaborations."
+        badge={`${active.length} active campaigns`}
+        action={
+          <Link href="/campaigns/create">
+            <DashboardHeaderAction>Create campaign</DashboardHeaderAction>
+          </Link>
+        }
+      />
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {kpis.map((item) => (

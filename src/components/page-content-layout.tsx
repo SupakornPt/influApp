@@ -1,8 +1,8 @@
 "use client";
 
-import { UserProfileChip } from "@/components/user-profile-chip";
-import { useRoleTheme } from "@/lib/use-role-theme";
+import { getPageBgClass } from "@/lib/nav-theme";
 import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 import { Children, cloneElement, isValidElement, type ReactElement, type ReactNode } from "react";
 
 function nodeContainsH1(node: ReactNode): boolean {
@@ -115,7 +115,8 @@ export function PageContentLayout({
   subtitle?: string;
   children: ReactNode;
 }) {
-  const roleTheme = useRoleTheme();
+  const pathname = usePathname() ?? "";
+  const pageBg = getPageBgClass(pathname);
   const split = title
     ? { headerH1: null, headerSubtitle: null, body: children }
     : splitPageChildren(children);
@@ -135,22 +136,10 @@ export function PageContentLayout({
   return (
     <div className="flex min-h-0 flex-col gap-4" data-page-content-layout>
       {headerH1 ? (
-        <header
-          className={cn(
-            "flex items-center justify-between gap-4 rounded-2xl px-5 py-4 shadow-sm sm:px-6",
-            roleTheme.pageBg
-          )}
-        >
-          <div className="min-w-0 flex-1">{headerH1}</div>
-          <div className="shrink-0">
-            <UserProfileChip />
-          </div>
-        </header>
-      ) : (
-        <div className="flex justify-end">
-          <UserProfileChip />
+        <div className={cn("rounded-2xl px-5 py-4 shadow-sm sm:px-6", pageBg)}>
+          <div className="min-w-0">{headerH1}</div>
         </div>
-      )}
+      ) : null}
 
       {headerSubtitle ? <div className="max-w-3xl px-1">{headerSubtitle}</div> : null}
 

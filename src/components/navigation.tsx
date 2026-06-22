@@ -17,6 +17,7 @@ import {
 import { getNavIconActiveClass, getNavIndicatorClass, getNavLinkClass } from "@/lib/nav-theme";
 import { cn } from "@/lib/utils";
 import { useSidebarOptional } from "@/components/sidebar-context";
+import { UserProfileChip } from "@/components/user-profile-chip";
 import { useUserStore } from "@/store/useUserStore";
 
 type NavLink = { href: string; label: string; icon: LucideIcon };
@@ -201,7 +202,7 @@ export function Navigation() {
           title={collapsed ? "Log out" : undefined}
           aria-label="Log out"
           className={cn(
-            "group flex w-full items-center rounded-xl text-sm font-medium text-slate-600 transition hover:bg-white hover:text-slate-900",
+            "group mb-2 flex w-full items-center rounded-xl text-sm font-medium text-slate-600 transition hover:bg-white hover:text-slate-900",
             collapsed ? "justify-center px-2 py-2.5" : "gap-3 px-3 py-2.5"
           )}
         >
@@ -210,6 +211,12 @@ export function Navigation() {
           </span>
           {!collapsed ? "Log out" : null}
         </button>
+        <div className={cn(collapsed ? "flex justify-center" : "w-full")}>
+          <UserProfileChip
+            collapsed={collapsed}
+            className={cn(!collapsed && "flex w-full gap-3 px-3 py-2.5")}
+          />
+        </div>
       </div>
     </nav>
   );

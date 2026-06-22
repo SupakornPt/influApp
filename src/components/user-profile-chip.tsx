@@ -14,7 +14,13 @@ function roleLabel(role: Role) {
   return "Agency";
 }
 
-export function UserProfileChip() {
+export function UserProfileChip({
+  className,
+  collapsed = false
+}: {
+  className?: string;
+  collapsed?: boolean;
+}) {
   const pathname = usePathname() ?? "";
   const { name, role } = useUserStore();
   const roleTheme = useRoleTheme();
@@ -24,26 +30,45 @@ export function UserProfileChip() {
   return (
     <Link
       href="/profile"
+      title={collapsed ? name : undefined}
       className={cn(
-        "inline-flex items-center gap-2 rounded-2xl px-2 py-1.5 pr-3 shadow-sm transition-colors",
-        isProfileActive ? roleTheme.profileChipActive : roleTheme.profileChip
+        "items-center gap-2 rounded-2xl shadow-sm transition-colors",
+        collapsed ? "inline-flex justify-center p-2" : "inline-flex px-2 py-1.5 pr-3",
+        isProfileActive ? roleTheme.profileChipActive : roleTheme.profileChip,
+        className
       )}
       aria-current={isProfileActive ? "page" : undefined}
+      aria-label={collapsed ? `${name}, ${roleLabel(role)}` : undefined}
     >
       <img
         src={avatarUrl}
         alt=""
         className={cn(
-          "h-8 w-8 rounded-full object-cover",
+          "shrink-0 rounded-full object-cover",
+          collapsed ? "h-9 w-9" : "h-8 w-8",
           isProfileActive ? "border border-white/40" : "border border-black/10"
         )}
       />
-      <div className="min-w-0 text-left leading-tight">
-        <p className="max-w-[108px] truncate text-xs font-semibold">{name}</p>
-        <p className={cn("max-w-[108px] truncate text-[10px] font-medium", isProfileActive ? "text-white/80" : "opacity-70")}>
-          {roleLabel(role)}
-        </p>
-      </div>
+      {!collapsed ? (
+        <div className="min-w-0 text-left leading-tight">
+          <p
+            className={cn(
+              "max-w-[108px] truncate text-xs font-semibold",
+              isProfileActive ? "text-white" : undefined
+            )}
+          >
+            {name}
+          </p>
+          <p
+            className={cn(
+              "max-w-[108px] truncate text-[10px] font-medium",
+              isProfileActive ? "text-white/80" : "opacity-70"
+            )}
+          >
+            {roleLabel(role)}
+          </p>
+        </div>
+      ) : null}
     </Link>
   );
 }

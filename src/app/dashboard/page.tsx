@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { BrandDashboard } from "@/components/brand-dashboard";
+import { DashboardHeaderAction, DashboardPageHeader } from "@/components/dashboard-page-header";
 import { getPageButtonClassForRoute } from "@/lib/nav-theme";
 import { cn } from "@/lib/utils";
 import { useUserStore } from "@/store/useUserStore";
@@ -9,11 +11,17 @@ const pageBtn = getPageButtonClassForRoute("/dashboard");
 
 function InfluencerDashboard() {
   return (
-    <section className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-slate-900">Influencer Dashboard</h1>
-        <p className="mt-2 text-slate-600">Quick overview of campaigns, messages, and earnings.</p>
-      </div>
+    <section className="space-y-5">
+      <DashboardPageHeader
+        title="Influencer Dashboard"
+        subtitle="Quick overview of campaigns, messages, and earnings."
+        badge="4 active campaigns"
+        action={
+          <Link href="/campaigns">
+            <DashboardHeaderAction>Find campaigns</DashboardHeaderAction>
+          </Link>
+        }
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
@@ -122,11 +130,18 @@ function InfluencerDashboard() {
 
 function AgencyDashboard() {
   return (
-    <section className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-slate-900">Agency Dashboard</h1>
-        <p className="mt-2 text-slate-600">High-level view of your portfolio and open work.</p>
-      </div>
+    <section className="space-y-5">
+      <DashboardPageHeader
+        title="Agency Dashboard"
+        subtitle="High-level view of your portfolio and open work."
+        badge="8 active briefs"
+        action={
+          <Link href="/campaigns">
+            <DashboardHeaderAction>View campaigns</DashboardHeaderAction>
+          </Link>
+        }
+      />
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           ["Active briefs", "8"],
