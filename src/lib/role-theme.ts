@@ -16,8 +16,8 @@ export interface RoleTheme {
 const ROLE_THEMES: Record<Role, RoleTheme> = {
   brand: {
     pageBg: "bg-role-navy-50",
-    profileChip: "bg-role-navy/10 border border-role-navy/25 text-role-navy hover:bg-role-navy/15",
-    profileChipActive: "bg-role-navy text-white border border-role-navy shadow-md",
+    profileChip: "bg-role-navy/10 text-role-navy hover:bg-role-navy/15",
+    profileChipActive: "bg-role-navy text-white shadow-md",
     cardBg: "bg-role-navy/10 border border-role-navy/20",
     profileHeader: "bg-role-navy",
     profileAccent: "text-role-navy",
@@ -27,8 +27,8 @@ const ROLE_THEMES: Record<Role, RoleTheme> = {
   },
   agency: {
     pageBg: "bg-emerald-50",
-    profileChip: "bg-emerald-100 border border-emerald-300 text-emerald-900 hover:bg-emerald-200",
-    profileChipActive: "bg-emerald-600 text-white border border-emerald-600 shadow-md",
+    profileChip: "bg-emerald-100 text-emerald-900 hover:bg-emerald-200",
+    profileChipActive: "bg-emerald-600 text-white shadow-md",
     cardBg: "bg-emerald-100 border border-emerald-200",
     profileHeader: "bg-emerald-600",
     profileAccent: "text-emerald-800",
@@ -38,8 +38,8 @@ const ROLE_THEMES: Record<Role, RoleTheme> = {
   },
   influencer: {
     pageBg: "bg-role-coral-50",
-    profileChip: "bg-role-coral/15 border border-role-coral/30 text-slate-900 hover:bg-role-coral/25",
-    profileChipActive: "bg-role-coral text-white border border-role-coral shadow-md",
+    profileChip: "bg-role-coral/15 text-slate-900 hover:bg-role-coral/25",
+    profileChipActive: "bg-role-coral text-white shadow-md",
     cardBg: "bg-role-coral/15 border border-role-coral/25",
     profileHeader: "bg-role-coral",
     profileAccent: "text-role-coral",

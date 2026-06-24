@@ -3,16 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getAvatarUrl } from "@/lib/avatar";
+import { getRoleLabel } from "@/lib/role-labels";
 import { cn } from "@/lib/utils";
 import { useRoleTheme } from "@/lib/use-role-theme";
 import { useUserStore } from "@/store/useUserStore";
-import type { Role } from "@/lib/types";
-
-function roleLabel(role: Role) {
-  if (role === "brand") return "Brand";
-  if (role === "influencer") return "Creator";
-  return "Agency";
-}
 
 export function UserProfileChip({
   className,
@@ -38,7 +32,7 @@ export function UserProfileChip({
         className
       )}
       aria-current={isProfileActive ? "page" : undefined}
-      aria-label={collapsed ? `${name}, ${roleLabel(role)}` : undefined}
+      aria-label={collapsed ? `${name}, ${getRoleLabel(role)}` : undefined}
     >
       <img
         src={avatarUrl}
@@ -65,7 +59,7 @@ export function UserProfileChip({
               isProfileActive ? "text-white/80" : "opacity-70"
             )}
           >
-            {roleLabel(role)}
+            {getRoleLabel(role)}
           </p>
         </div>
       ) : null}

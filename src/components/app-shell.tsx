@@ -12,8 +12,8 @@ function AppSidebarLayout({ children, pageBg }: { children: React.ReactNode; pag
   const { collapsed } = useSidebar();
 
   return (
-    <main className={cn("min-h-screen w-full transition-colors duration-300", pageBg)}>
-      <div className="flex min-h-screen w-full flex-col lg:flex-row">
+    <main className={cn("flex min-h-svh w-full flex-col transition-colors duration-300", pageBg)}>
+      <div className="flex min-h-0 w-full flex-1 flex-col lg:min-h-svh lg:flex-row">
         <aside
           className={cn(
             "flex w-full shrink-0 flex-col border-b border-slate-200/70 transition-[width] duration-300 lg:sticky lg:top-0 lg:h-screen lg:border-b-0 lg:border-r",
@@ -30,7 +30,7 @@ function AppSidebarLayout({ children, pageBg }: { children: React.ReactNode; pag
             )}
           />
         </aside>
-        <section className="relative min-w-0 flex-1 px-4 pb-6 pt-4 lg:px-6 lg:pt-5">
+        <section className="relative flex min-h-0 min-w-0 flex-1 flex-col px-4 pb-6 pt-4 lg:px-6 lg:pt-5">
           {isPageContentLayout(children) ? children : <PageContentLayout>{children}</PageContentLayout>}
         </section>
       </div>

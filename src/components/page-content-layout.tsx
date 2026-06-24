@@ -134,17 +134,17 @@ export function PageContentLayout({
   const body = split.body;
 
   return (
-    <div className="flex min-h-0 flex-col gap-4" data-page-content-layout>
+    <div className="flex min-h-0 flex-1 flex-col gap-4" data-page-content-layout>
       {headerH1 ? (
-        <div className={cn("rounded-2xl px-5 py-4 shadow-sm sm:px-6", pageBg)}>
+        <div className={cn("shrink-0 rounded-2xl px-5 py-4 shadow-sm sm:px-6", pageBg)}>
           <div className="min-w-0">{headerH1}</div>
         </div>
       ) : null}
 
-      {headerSubtitle ? <div className="max-w-3xl px-1">{headerSubtitle}</div> : null}
+      {headerSubtitle ? <div className="max-w-3xl shrink-0 px-1">{headerSubtitle}</div> : null}
 
       {body ? (
-        <div className={cn("min-h-[calc(100vh-14rem)] flex-1 rounded-2xl p-5 shadow-sm sm:p-6", SIDEBAR_SURFACE_CLASS)}>{body}</div>
+        <div className={cn("min-h-0 flex-1 rounded-2xl p-5 shadow-sm sm:p-6", SIDEBAR_SURFACE_CLASS)}>{body}</div>
       ) : null}
     </div>
   );

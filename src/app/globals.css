@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 body {
-  @apply bg-slate-50 text-slate-900;
+  @apply min-h-svh bg-slate-50 text-slate-900;
+}
+
+html {
+  @apply min-h-svh;
 }
 
 @layer base {
