@@ -2,15 +2,14 @@
 
 import { InfluencerCard } from "@/components/influencer-card";
 import { InfluencerDetailPanel } from "@/components/influencer-detail-panel";
-import { useSidebarOptional } from "@/components/sidebar-context";
 import { getMainFollowerPlatform } from "@/lib/influencer-platforms";
 import { getPageButtonClassForRoute, getPageSolidClassForRoute } from "@/lib/nav-theme";
 import { cn } from "@/lib/utils";
 import { Influencer } from "@/lib/types";
 import { influencers } from "@/mock/influencers";
+import { SlidersHorizontal } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 
 const pageBtn = getPageButtonClassForRoute("/discover");
 const pageSolid = getPageSolidClassForRoute("/discover");
@@ -151,9 +150,7 @@ function DiscoverPageContent() {
   const searchParams = useSearchParams();
   const urlFromQuery = searchParams.get("url");
   const processedUrlRef = useRef<string | null>(null);
-  const sidebar = useSidebarOptional();
-  const collapsed = sidebar?.collapsed ?? false;
-  const [sidebarSlot, setSidebarSlot] = useState<HTMLElement | null>(null);
+  const [showFiltersPanel, setShowFiltersPanel] = useState(false);
   const [smartQuery, setSmartQuery] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [country, setCountry] = useState("All");
@@ -554,11 +551,6 @@ function DiscoverPageContent() {
   }, [generatedInfluencer, generatedInfluencerMeta, selectedInfluencer]);
 
   useEffect(() => {
-    const targetId = collapsed ? "discover-filters-inline" : "app-sidebar-slot";
-    setSidebarSlot(document.getElementById(targetId));
-  }, [collapsed]);
-
-  useEffect(() => {
     if (!selectedInfluencerId) return;
     if (!discoverCards.some((item) => item.id === selectedInfluencerId)) {
       setSelectedInfluencerId(null);
@@ -579,11 +571,68 @@ function DiscoverPageContent() {
         </div>
       </div>
 
-      <div id="discover-filters-inline" className={collapsed ? undefined : "hidden"} />
-
-      {sidebarSlot
-        ? createPortal(
-            <aside className="rounded-2xl border border-white/80 bg-white/90 p-4 shadow-sm backdrop-blur">
+      <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
+        <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-semibold text-slate-700">Search influencer (social URL or Smart Search)</label>
+            <div className="flex flex-col gap-2 md:flex-row">
+              <input
+                type="text"
+                value={unifiedSearchInput}
+                onChange={(event) => setUnifiedSearchInput(event.target.value)}
+                placeholder="https://instagram.com/creator_name or beauty tiktok thailand micro"
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
+              />
+              <button
+                type="button"
+                onClick={handleUnifiedSearch}
+                className={cn("rounded-xl px-4 py-2 text-sm font-semibold transition", pageBtn)}
+              >
+                Search
+              </button>
+            </div>
+            {urlSearchError && <p className="text-xs text-rose-600">{urlSearchError}</p>}
+            <p className="text-xs text-slate-500">Tip: Paste a creator URL to generate profile detail, or type keywords to apply smart filters.</p>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
+              <span className="text-sm font-semibold text-slate-700">Active filters:</span>
+              {activeChips.length === 0 ? (
+                <span className="text-sm text-slate-500">None</span>
+              ) : (
+                activeChips.map((chip) => (
+                  <span key={chip} className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">
+                    {chip}
+                  </span>
+                ))
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowFiltersPanel((current) => !current)}
+              aria-expanded={showFiltersPanel}
+              aria-label={showFiltersPanel ? "Hide filters" : "Show filters"}
+              className={cn(
+                "relative inline-flex shrink-0 items-center justify-center rounded-xl border p-2 transition",
+                showFiltersPanel
+                  ? "border-indigo-200 bg-indigo-50 text-indigo-700"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+              )}
+            >
+              <SlidersHorizontal className="size-5" aria-hidden />
+              {activeChips.length > 0 && (
+                <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white">
+                  {activeChips.length}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+        {showFiltersPanel && (
+          <aside className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <h2 className="text-base font-semibold text-slate-900">Filters</h2>
                 <button
@@ -914,50 +963,8 @@ function DiscoverPageContent() {
                   </div>
                 )}
               </div>
-            </aside>,
-            sidebarSlot
-          )
-        : null}
-
-      <div className="space-y-4">
-        <div className="min-w-0 space-y-4">
-        <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-slate-700">Search influencer (social URL or Smart Search)</label>
-            <div className="flex flex-col gap-2 md:flex-row">
-              <input
-                type="text"
-                value={unifiedSearchInput}
-                onChange={(event) => setUnifiedSearchInput(event.target.value)}
-                placeholder="https://instagram.com/creator_name or beauty tiktok thailand micro"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-              />
-              <button
-                type="button"
-                onClick={handleUnifiedSearch}
-                className={cn("rounded-xl px-4 py-2 text-sm font-semibold transition", pageBtn)}
-              >
-                Search
-              </button>
-            </div>
-            {urlSearchError && <p className="text-xs text-rose-600">{urlSearchError}</p>}
-            <p className="text-xs text-slate-500">Tip: Paste a creator URL to generate profile detail, or type keywords to apply smart filters.</p>
-          </div>
-        </div>
-        <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-sm font-semibold text-slate-700">Active filters:</span>
-            {activeChips.length === 0 ? (
-              <span className="text-sm text-slate-500">None</span>
-            ) : (
-              activeChips.map((chip) => (
-                <span key={chip} className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">
-                  {chip}
-                </span>
-              ))
-            )}
-          </div>
-        </div>
+            </aside>
+        )}
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
           {discoverCards.map((influencer) => (
             <InfluencerCard
