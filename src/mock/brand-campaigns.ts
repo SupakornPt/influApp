@@ -9,6 +9,7 @@ export type BrandCampaignListItem = {
   influencersJoined: number;
   platform: "TikTok" | "Instagram" | "YouTube";
   objective: "Awareness" | "Engagement" | "Conversion";
+  coverImage: string;
 };
 
 export const brandCampaigns: BrandCampaignListItem[] = [
@@ -22,7 +23,8 @@ export const brandCampaigns: BrandCampaignListItem[] = [
     deadline: "2026-05-30",
     influencersJoined: 5,
     platform: "TikTok",
-    objective: "Awareness"
+    objective: "Awareness",
+    coverImage: "/pictures/image1.png"
   },
   {
     id: "fitbites-snack",
@@ -34,7 +36,8 @@ export const brandCampaigns: BrandCampaignListItem[] = [
     deadline: "2026-06-10",
     influencersJoined: 4,
     platform: "Instagram",
-    objective: "Engagement"
+    objective: "Engagement",
+    coverImage: "/pictures/image2.png"
   },
   {
     id: "neogear-private",
@@ -46,7 +49,8 @@ export const brandCampaigns: BrandCampaignListItem[] = [
     deadline: "2026-06-20",
     influencersJoined: 0,
     platform: "YouTube",
-    objective: "Conversion"
+    objective: "Conversion",
+    coverImage: "/pictures/image3.png"
   },
   {
     id: "roamly-travel",
@@ -58,7 +62,8 @@ export const brandCampaigns: BrandCampaignListItem[] = [
     deadline: "2026-04-15",
     influencersJoined: 3,
     platform: "TikTok",
-    objective: "Awareness"
+    objective: "Awareness",
+    coverImage: "/pictures/agency.jpg"
   }
 ];
 
