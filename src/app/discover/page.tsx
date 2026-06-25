@@ -1,17 +1,16 @@
 "use client";
 
-import { InfluencerCard } from "@/components/influencer-card";
 import { InfluencerDetailPanel } from "@/components/influencer-detail-panel";
+import { InfluencerShelf } from "@/components/influencer-shelf";
 import { getMainFollowerPlatform } from "@/lib/influencer-platforms";
-import { getPageButtonClassForRoute, getPageSolidClassForRoute } from "@/lib/nav-theme";
+import { getPageSolidClassForRoute } from "@/lib/nav-theme";
 import { cn } from "@/lib/utils";
 import { Influencer } from "@/lib/types";
 import { influencers } from "@/mock/influencers";
-import { SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 
-const pageBtn = getPageButtonClassForRoute("/discover");
 const pageSolid = getPageSolidClassForRoute("/discover");
 
 type FollowerRange = "All" | "Nano" | "Micro" | "Mid" | "Macro" | "Mega";
@@ -150,6 +149,7 @@ function DiscoverPageContent() {
   const searchParams = useSearchParams();
   const urlFromQuery = searchParams.get("url");
   const processedUrlRef = useRef<string | null>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [showFiltersPanel, setShowFiltersPanel] = useState(false);
   const [smartQuery, setSmartQuery] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
@@ -174,6 +174,7 @@ function DiscoverPageContent() {
   const [mainPlatformFilter, setMainPlatformFilter] = useState<string>("All");
   const [selectedInfluencerId, setSelectedInfluencerId] = useState<string | null>(null);
   const [unifiedSearchInput, setUnifiedSearchInput] = useState("");
+  const [searchActive, setSearchActive] = useState(false);
   const [urlSearchError, setUrlSearchError] = useState("");
   const [generatedInfluencer, setGeneratedInfluencer] = useState<Influencer | null>(null);
   const [generatedInfluencerMeta, setGeneratedInfluencerMeta] = useState<InfluencerMeta | null>(null);
@@ -421,9 +422,16 @@ function DiscoverPageContent() {
     processedUrlRef.current = urlFromQuery;
     const decoded = decodeURIComponent(urlFromQuery);
     setUnifiedSearchInput(decoded);
+    setSearchActive(true);
     const normalizedUrl = /^https?:\/\//i.test(decoded.trim()) ? decoded.trim() : `https://${decoded.trim()}`;
     buildInfluencerFromSocialUrl(normalizedUrl);
   }, [urlFromQuery]);
+
+  useEffect(() => {
+    if (searchActive) {
+      searchInputRef.current?.focus();
+    }
+  }, [searchActive]);
 
   const countries = useMemo(
     () => ["All", ...new Set(Object.values(influencerMeta).map((meta) => meta.country))],
@@ -537,6 +545,43 @@ function DiscoverPageContent() {
     return [generatedInfluencer, ...filtered];
   }, [filtered, generatedInfluencer]);
 
+  const resolveMeta = (id: string) => {
+    if (generatedInfluencer && generatedInfluencerMeta && id === generatedInfluencer.id) {
+      return generatedInfluencerMeta;
+    }
+    return influencerMeta[id];
+  };
+
+  const trendingInfluencers = useMemo(
+    () =>
+      [...discoverCards]
+        .sort((a, b) => b.performanceScore * 1000 + b.followers - (a.performanceScore * 1000 + a.followers))
+        .slice(0, 10),
+    [discoverCards]
+  );
+
+  const recommendedInfluencers = useMemo(
+    () =>
+      [...discoverCards]
+        .sort((a, b) => {
+          const metaA = resolveMeta(a.id);
+          const metaB = resolveMeta(b.id);
+          const scoreA = (metaA?.qualityScore ?? 0) + a.engagementRate * 10;
+          const scoreB = (metaB?.qualityScore ?? 0) + b.engagementRate * 10;
+          return scoreB - scoreA;
+        })
+        .slice(0, 10),
+    [discoverCards, generatedInfluencer, generatedInfluencerMeta]
+  );
+
+  const fastGrowingInfluencers = useMemo(
+    () =>
+      [...discoverCards]
+        .sort((a, b) => (resolveMeta(b.id)?.growthRate ?? 0) - (resolveMeta(a.id)?.growthRate ?? 0))
+        .slice(0, 10),
+    [discoverCards, generatedInfluencer, generatedInfluencerMeta]
+  );
+
   const selectedInfluencer = useMemo(
     () => discoverCards.find((item) => item.id === selectedInfluencerId) ?? null,
     [discoverCards, selectedInfluencerId]
@@ -573,63 +618,83 @@ function DiscoverPageContent() {
 
       <div className="space-y-4">
         <div className="min-w-0 space-y-4">
-        <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-slate-700">Search influencer (social URL or Smart Search)</label>
-            <div className="flex flex-col gap-2 md:flex-row">
-              <input
-                type="text"
-                value={unifiedSearchInput}
-                onChange={(event) => setUnifiedSearchInput(event.target.value)}
-                placeholder="https://instagram.com/creator_name or beauty tiktok thailand micro"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
-              />
+        <div className="rounded-2xl border border-slate-200 bg-white/90 p-3 shadow-sm">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            {searchActive ? (
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  handleUnifiedSearch();
+                }}
+                className="flex w-full shrink-0 items-center gap-1.5 sm:max-w-xs"
+              >
+                <Search className="size-4 shrink-0 text-slate-400" aria-hidden />
+                <input
+                  ref={searchInputRef}
+                  type="search"
+                  value={unifiedSearchInput}
+                  onChange={(event) => setUnifiedSearchInput(event.target.value)}
+                  aria-label="Search by social URL or keywords"
+                  onBlur={() => {
+                    if (!unifiedSearchInput.trim()) {
+                      setSearchActive(false);
+                      setUrlSearchError("");
+                    }
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape" && !unifiedSearchInput.trim()) {
+                      setSearchActive(false);
+                      setUrlSearchError("");
+                    }
+                  }}
+                  className="w-full min-w-[8rem] border-0 border-b border-slate-300 bg-transparent py-1 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-0"
+                />
+              </form>
+            ) : (
               <button
                 type="button"
-                onClick={handleUnifiedSearch}
-                className={cn("rounded-xl px-4 py-2 text-sm font-semibold transition", pageBtn)}
+                onClick={() => setSearchActive(true)}
+                aria-label="Search by social URL or keywords"
+                className="inline-flex shrink-0 items-center justify-center p-1 text-slate-500 transition hover:text-slate-700"
               >
-                Search
+                <Search className="size-5" aria-hidden />
+              </button>
+            )}
+            <div className="flex min-w-0 items-center justify-end gap-2 sm:ml-auto">
+              <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
+                <span className="text-sm font-semibold text-slate-700">Active filters:</span>
+                {activeChips.length === 0 ? (
+                  <span className="text-sm text-slate-500">None</span>
+                ) : (
+                  activeChips.map((chip) => (
+                    <span key={chip} className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">
+                      {chip}
+                    </span>
+                  ))
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowFiltersPanel((current) => !current)}
+                aria-expanded={showFiltersPanel}
+                aria-label={showFiltersPanel ? "Hide filters" : "Show filters"}
+                className={cn(
+                  "relative inline-flex shrink-0 items-center justify-center p-1 transition",
+                  showFiltersPanel
+                    ? "text-indigo-700"
+                    : "text-slate-500 hover:text-slate-700"
+                )}
+              >
+                <SlidersHorizontal className="size-5" aria-hidden />
+                {activeChips.length > 0 && (
+                  <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white">
+                    {activeChips.length}
+                  </span>
+                )}
               </button>
             </div>
-            {urlSearchError && <p className="text-xs text-rose-600">{urlSearchError}</p>}
-            <p className="text-xs text-slate-500">Tip: Paste a creator URL to generate profile detail, or type keywords to apply smart filters.</p>
           </div>
-        </div>
-        <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex min-w-0 flex-wrap items-center gap-2">
-              <span className="text-sm font-semibold text-slate-700">Active filters:</span>
-              {activeChips.length === 0 ? (
-                <span className="text-sm text-slate-500">None</span>
-              ) : (
-                activeChips.map((chip) => (
-                  <span key={chip} className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-medium text-indigo-700">
-                    {chip}
-                  </span>
-                ))
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowFiltersPanel((current) => !current)}
-              aria-expanded={showFiltersPanel}
-              aria-label={showFiltersPanel ? "Hide filters" : "Show filters"}
-              className={cn(
-                "relative inline-flex shrink-0 items-center justify-center rounded-xl border p-2 transition",
-                showFiltersPanel
-                  ? "border-indigo-200 bg-indigo-50 text-indigo-700"
-                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
-              )}
-            >
-              <SlidersHorizontal className="size-5" aria-hidden />
-              {activeChips.length > 0 && (
-                <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white">
-                  {activeChips.length}
-                </span>
-              )}
-            </button>
-          </div>
+          {urlSearchError && <p className="mt-2 text-xs text-rose-600">{urlSearchError}</p>}
         </div>
         {showFiltersPanel && (
           <aside className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm">
@@ -965,20 +1030,32 @@ function DiscoverPageContent() {
               </div>
             </aside>
         )}
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5">
-          {discoverCards.map((influencer) => (
-            <InfluencerCard
-              key={influencer.id}
-              influencer={influencer}
-              isActive={selectedInfluencerId === influencer.id}
-              onSelect={(selected) => setSelectedInfluencerId(selected.id)}
-            />
-          ))}
-          {discoverCards.length === 0 && (
-            <article className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-600 md:col-span-2 xl:col-span-4 2xl:col-span-5">
-              No influencers matched these filters. Try broadening your criteria.
-            </article>
-          )}
+        <div className="space-y-8 rounded-2xl bg-slate-900/[0.03] p-4 sm:p-5">
+          <InfluencerShelf
+            title="Top Ten: Trending Influencers"
+            subtitle="Highest-performing creators by reach and campaign score"
+            influencers={trendingInfluencers}
+            selectedId={selectedInfluencerId}
+            onSelect={(selected) => setSelectedInfluencerId(selected.id)}
+            showRank
+            emptyMessage="No influencers matched these filters. Try broadening your criteria."
+          />
+          <InfluencerShelf
+            title="Recommended For You"
+            subtitle="Curated picks based on audience quality and engagement"
+            influencers={recommendedInfluencers}
+            selectedId={selectedInfluencerId}
+            onSelect={(selected) => setSelectedInfluencerId(selected.id)}
+            emptyMessage="No recommendations for the current filters."
+          />
+          <InfluencerShelf
+            title="Fast Growing Creators"
+            subtitle="Creators with the strongest month-over-month audience growth"
+            influencers={fastGrowingInfluencers}
+            selectedId={selectedInfluencerId}
+            onSelect={(selected) => setSelectedInfluencerId(selected.id)}
+            emptyMessage="No fast-growing creators match these filters."
+          />
         </div>
         </div>
       </div>
